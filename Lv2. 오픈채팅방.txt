@@ -3,27 +3,27 @@ import java.util.HashMap;
 class Solution {
     public String[] solution(String[] record) {
         
-        HashMap<String,String> hm = new HashMap<>(); //id, nickname
-        int cnt=0;     //change count
+        HashMap<String,String> hm = new HashMap<>();    //id, nickname
+        int cnt=0;        //change count
         
-        for(int i=record.length-1;i>=0;i--){    //ÃÖ½ÅºÎÅÍ À¯ÀúÀÇ ¾ÆÀÌµğ¿Í ´Ğ³×ÀÓ ÀúÀå
+        for(int i=record.length-1;i>=0;i--){        //ìµœì‹ ë¶€í„° ìœ ì €ì˜ ì•„ì´ë””ì™€ ë‹‰ë„¤ì„ ì €ì¥
             if(record[i].split(" ")[0].equals("Leave")) continue;
             
             if(record[i].split(" ")[0].equals("Change")) cnt++;
-            hm.putIfAbsent(record[i].split(" ")[1], record[i].split(" ")[2]); //ÀÌ¹Ì Á¸ÀçÇÏ¸é º¯°æx
+            hm.putIfAbsent(record[i].split(" ")[1], record[i].split(" ")[2]);   //ì´ë¯¸ ì¡´ì¬í•˜ë©´ ë³€ê²½x
         }
         
         String[] answer =new String[record.length-cnt];
        
-        int idx=0; //answer¹è¿­¿¡¼­ Ãß°¡ÇÒ À§Ä¡index
+        int idx=0;           //answerë°°ì—´ì—ì„œ ì¶”ê°€í•  ìœ„ì¹˜index
         for(int i=0;i<record.length;i++){
             String state = record[i].split(" ")[0];
             if(state.equals("Change")) continue;
             
             String k_id=hm.get(record[i].split(" ")[1]);
             
-            if(state.equals("Enter")) answer[idx] = k_id+"´ÔÀÌ µé¾î¿Ô½À´Ï´Ù.";
-            else answer[idx]=k_id+"´ÔÀÌ ³ª°¬½À´Ï´Ù.";
+            if(state.equals("Enter")) answer[idx] = k_id+"ë‹˜ì´ ë“¤ì–´ì™”ìŠµë‹ˆë‹¤.";
+            else answer[idx]=k_id+"ë‹˜ì´ ë‚˜ê°”ìŠµë‹ˆë‹¤.";
             idx++;
         }
         
