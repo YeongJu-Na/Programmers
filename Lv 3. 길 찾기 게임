@@ -1,0 +1,154 @@
+import java.util.Arrays;
+import java.util.Comparator;
+
+//preorder, postorder, inorder --> dfs에 속함, 트리를 탐색하는 방법(트리도 그래프의 일종)
+public class test{
+	public static int post_idx=0;
+	public static void main(String[] args){
+    
+		Node[] nodes = new Node[input.length];
+		for(int i=0;i<input.length;i++) { //노드 정보 담기
+			nodes[i]=new Node(i+1,input[i][0],input[i][1]);
+		}
+		Arrays.sort(nodes,new Comparator<Node>() { // y값 기준 정렬
+			public int compare(Node n1, Node n2) {
+				if(n1.y==n2.y) return n1.x-n2.x;
+				return n2.y-n1.y;
+			}
+		});
+		
+		Tree tt = new Tree();
+		for(Node n: nodes) tt.addNode(n); //7 4 2 6 1 3 ...
+		
+		tt.preOrder(tt.root);
+		tt.postOrder(tt.root);
+		System.out.println(tt.pre);
+		System.out.println(tt.post);
+	}
+	
+}
+class Tree{
+	Node root;
+	String pre = "";
+	String post = "";
+	
+	void addNode(Node i) {
+		if(root==null) root=i;
+		else addNode(i,root);
+	}
+	void addNode(Node i, Node root) {
+		if(i.x<root.x) {
+			if(root.left==null) root.left=i;
+			else addNode(i,root.left);
+		}
+		else {
+			if(root.right==null) root.right=i;
+			else addNode(i,root.right);
+		}
+	}
+	void preOrder(Node n) {
+		pre +=n.idx+",";
+		if(n.left!=null) preOrder(n.left);
+		if(n.right!=null) preOrder(n.right);
+	}
+	void postOrder(Node n) {
+		if(n.left!=null) postOrder(n.left);
+		if(n.right!=null) postOrder(n.right);
+		post += n.idx+",";
+	}
+}
+class Node{
+	int idx;
+	int x;
+	int y;
+	Node right;
+	Node left;
+	Node(int idx,int x, int y){
+		this.idx=idx;
+		this.x=x;
+		this.y=y;
+	}
+}
+//////////////////////// 이전 풀이 - tree클래스x
+//노드 정보 담고 y값 기준 정렬은 위와 같음
+
+for(int i=1;i<arr.length;i++) {          
+            Node start = arr[0];
+            while(true){                 //노드 간 연결
+                if(arr[i].x < start.x){
+                    if(start.left==null){
+                        start.left=arr[i];
+                        arr[i].parent=start;
+                        break;
+                    }
+                    else start=start.left;
+                }
+                else{
+                    if(start.right==null){
+                        start.right=arr[i];
+                        arr[i].parent=start;
+                        break;
+                    }
+                    else start=start.right;
+                }
+            }
+		}
+        
+        int idx=0;
+        Node start=arr[0];
+        while(idx<nodeinfo.length){     // preOrder  -->백트래킹과정을 위해 노드클래스에 parent와 visit정보 추가해서 이용함
+            if(!start.visit){         //해당노드먼저(pre)
+                start.visit=true;
+                answer[0][idx]=start.id;
+                idx++;
+            }
+            if((start.left==null||start.left.visit)&&(start.right==null||start.right.visit)){
+                start=start.parent;
+                continue;
+            }
+            if(start.left!=null && !start.left.visit){    //해당 노드의 left
+                start=start.left;
+            }
+            else if(start.right!=null && !start.right.visit){  //해당 노드의 right
+                start=start.right;
+            }
+            else start=start.parent;  //부모 노드로 돌아가기
+        }
+        for(Node n:arr) n.visit=false;
+        
+        //post(arr[0],answer);
+        post_test(arr[0],answer,0);
+        for(int x:answer[1]) System.out.print(x+" ");
+        return answer;
+    }
+    
+    public void post(Node cur, int[][] answer){ //root, 0
+        if(cur.left!=null && !cur.left.visit) post(cur.left,answer);
+        if(cur.right!=null && !cur.right.visit) post(cur.right,answer);
+        answer[1][post_idx]=cur.id;
+        post_idx++;          //클래스 변수(static)으로 하지 않으면 값 변경 안됨
+        return;
+    }
+    public int post_test(Node cur, int[][] answer, int idx){        //idx를 넘겨주고 리턴결과로
+        if(cur.left!=null && !cur.left.visit) idx = post_test(cur.left,answer,idx);
+        if(cur.right!=null && !cur.right.visit) idx = post_test(cur.right,answer,idx);
+        answer[1][idx]=cur.id;
+        idx++;
+        return idx;
+    }
+}
+class Node{
+    int id;
+    int x; 
+    int y;
+    Node left;
+    Node right;
+    Node parent;
+    boolean visit=false;
+    Node(int id, int x, int y){
+        this.id=id;
+        this.x=x;
+        this.y=y;
+    }
+}
+
