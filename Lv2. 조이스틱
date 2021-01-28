@@ -1,0 +1,23 @@
+class Solution {
+    
+    public int solution(String name) {
+        int answer = 0;
+        
+        int min = name.length()-1;
+        
+        for(int i=0;i<name.length();i++){
+            answer += a_cnt(name.charAt(i));   //= Math.min(name.charAt(i)-'A', 'Z'-name.charAt(i)+1);
+            int next = i+1;
+            
+            while(next<name.length() && name.charAt(next)=='A'){
+                min = Math.min(Math.min((i*2+name.length()-1-next),min),(name.length()-1-next)*2+i);   // Min(정->A->역, 역->A->정, 한방향으로만)
+                next++;
+            }
+        }
+        answer += min;
+        return answer;
+    }
+    public static int a_cnt(Character c){       //문자 한개의 이동 횟수(위,아래) 계산
+        return (c<='N')? (int)c-65: 91-(int)c;
+    }
+}
