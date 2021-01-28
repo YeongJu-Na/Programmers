@@ -1,0 +1,45 @@
+import java.util.ArrayList;
+import java.util.HashSet;
+
+public class test{
+	public static void main(String[] args){
+		String[][] relation={{"100", "ryan", "music", "2"}, 
+				{"200", "apeach", "math", "2"}, 
+				{"300", "tube", "computer", "3"}, 
+				{"400", "con", "computer", "4"}, 
+				{"500", "muzi", "music", "3"}, 
+				{"600", "apeach", "music", "2"}};
+		
+		int row = relation.length; //튜플 개수
+        int col = relation[0].length; //속성 개수
+        int answer = 0;
+        ArrayList<Integer> candidateKey=new ArrayList<>();    // 후보키 집합
+        
+        for(int i=1;i < 1<<col; i++) {    // 속성들의 모든 부분 집합에 대해 검사
+        	if(!isMinimal(i,candidateKey)) continue;  //최소성 확인
+        	if(!isUnique(i, relation)) continue;      //유일성 확인
+        	candidateKey.add(i);
+        }
+        System.out.println(candidateKey);
+	}
+	static boolean isMinimal(int set, ArrayList<Integer> candidateKey) {
+		for(int key: candidateKey) {
+			if((set & key)==key) return false;    //해당 키(set)가 후보키에 있을 경우 -> 0101이 key에 존재 시, 101,111,1101,1111모두 false 
+		}
+		return true;
+	}
+	static boolean isUnique(int set, String[][] r) {
+		HashSet<String> hs = new HashSet<>();   //해당set에 대한 튜플들의 값 넣을 곳 --> 중복 확인 위해
+		
+		for(int i=0;i<r.length;i++) {
+			String str= "";
+			for(int j=0;j<r[0].length;j++) {
+				if((set & (1<<j)) != 0) str += r[i][j];  //set에서 값이 1인 비트 즉, 검사할 속성인 경우  
+			}
+			if(hs.contains(str)) return false;
+			hs.add(str);
+		}
+		
+		return true;
+	}
+}
