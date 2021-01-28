@@ -1,0 +1,33 @@
+import java.util.Queue;
+import java.util.LinkedList;
+import java.util.PriorityQueue;
+class Solution {
+    public int solution(int[] priorities, int location) {
+        int answer = 0;
+        PriorityQueue<Integer> pq = new PriorityQueue<>((o1,o2)->o2-o1);   //대기중인 인쇄목록 중 최대우선순위 값 찾는 용도로만
+        Queue<Print> qq = new LinkedList<>();
+        
+        for(int i=0;i<priorities.length;i++){
+            pq.add(priorities[i]);
+            qq.add(new Print(priorities[i],i));
+        }
+        for(int i=0;i<priorities.length;i++){
+            int max = pq.poll();
+            while(qq.peek().p!=max){
+                qq.add(qq.poll());
+            }
+            if(qq.poll().idx==location) answer= i+1;
+        }
+        return answer;
+    }
+}
+class Print{
+    int p; //우선순위
+    int idx;
+    Print(int p, int idx){
+        this.p=p;
+        this.idx=idx;
+    }
+}
+
+//다른 풀이 - 큐에 priorties넣고 해당 배열은 sort해서 최대값 알아냄
