@@ -1,0 +1,52 @@
+import java.util.Comparator;
+import java.util.Arrays;
+class Solution {
+    public int solution(int[] a) {
+        
+        if(a.length==1) return 1;
+         
+        int answer = a.length;
+        Num[] arr = new Num[a.length];
+        for(int i=0;i<a.length;i++) arr[i] = new Num(a[i],i);
+        
+        Arrays.sort(arr, new Comparator<Num>(){
+            public int compare(Num n1, Num n2){
+                return n1.data-n2.data;
+            }
+        });
+        
+        int min_idx= Math.min(arr[0].idx, arr[1].idx);
+        int max_idx= Math.max(arr[0].idx, arr[1].idx);
+        for(int i=2;i<arr.length;i++){
+            if(arr[i].idx >min_idx && arr[i].idx < max_idx) answer--;
+            else if(arr[i].idx< min_idx) min_idx = arr[i].idx;
+            else max_idx = arr[i].idx;
+        }
+        return answer;
+    }
+}
+class Num{
+    int data;
+    int idx;
+    Num(int data, int idx){
+        this.data= data;
+        this.idx = idx;
+    }
+}
+///// 다른 풀이 - 최소값을 기준으로 왼쪽 값들은 자신의 왼쪽에 작은값있으면x, 오른쪽 값들은 그 오른쪽에 있으면x
+///// 다른 풀이 - 왼쪽부터 해당 위치 값이 이전 값(왼쪽)보다 작으면 가능, 오른쪽부터도 해당 위치 값이 더 오른쪽의 값보다 작으면o
+import java.util.HashSet;
+class Solution{
+    public int solution(int[] a) {
+        int answer = 0;
+        int min1 = Integer.MAX_VALUE;
+        int min2 = Integer.MAX_VALUE;
+        HashSet<Integer> hs = new HashSet<>();
+        for(int i=0;i<a.length;i++){
+            min1 = Math.min(min1, a[i]);
+            min2 = Math.min(min2, a[a.length-1-i]);
+            hs.add(min1);
+            hs.add(min2);
+        }
+        return hs.size();
+}
