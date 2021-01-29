@@ -22,8 +22,18 @@ class Solution {
         return answer;
     }
 }
+//////// 다른 풀이 1 - 라이브러리 사용 없이, 이중 for문으로 
+for(int i=0; i<ps.length;i++) {
+			for(int j=i+1;j<ps.length;j++) {
+				answer[i]++;
+				if(ps[i] > ps[j]) {
+					break;
+				}
+				
+			}
+		}
 
-//////// 가격과 위치정보를 넣어 클래스로 만들고 스택에 넣을 수도 있음
+//////// 다른 풀이 2 - 가격과 위치정보를 넣어 클래스로 만들고 스택에 넣을 수도 있음
 /*
 class Price{
     int p;
