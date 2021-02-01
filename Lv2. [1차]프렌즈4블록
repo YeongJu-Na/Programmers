@@ -1,0 +1,60 @@
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.*;
+class Solution {
+    public int solution(int m, int n, String[] board) {
+        //m x n 행렬
+        int answer = 0;
+        
+        StringBuilder[] sbs = new StringBuilder[n];
+        
+    for(int i=0;i<n;i++) {
+			sbs[i] = new StringBuilder();
+			for(int j=m-1;j>=0;j--) {
+				sbs[i].append(board[j].charAt(i));
+			}
+		}
+        HashSet<Node> hs = new HashSet<>();
+		while(true) {
+			for(int i=0;i<n-1;i++) {
+				for(int j=0;j<sbs[i].length()-1;j++) {
+               if(sbs[i+1].length()<j+2) continue;    //비교할 [i+1][j+1]이 없는 경우
+					if(sbs[i].charAt(j)!=sbs[i+1].charAt(j) ||sbs[i].charAt(j)!=sbs[i].charAt(j+1)||sbs[i].charAt(j)!=sbs[i+1].charAt(j+1)) continue;
+					hs.add(new Node(i,j));
+					hs.add(new Node(i,j+1));
+					hs.add(new Node(i+1,j));
+					hs.add(new Node(i+1,j+1));
+				}
+			}
+            if(hs.isEmpty()) break;     //더이상 4블록없는 경우
+            answer += hs.size();
+            List<Node> temp = hs.stream().sorted((o1,o2)->o2.y-o1.y).collect(Collectors.toList());
+			for(Node nn:temp) sbs[nn.x].deleteCharAt(nn.y);   //블록 깨짐
+			//for(int i=0;i<sbs.length;i++)System.out.println(sbs[i]);
+			hs.clear();
+        }
+        return answer;
+    }
+}
+class Node{
+    int x;
+    int y;
+    Node(int x, int y){
+        super();
+        this.x = x;
+        this.y = y;
+    }
+    public int hashCode(){    //hashset에서 내가 만든 class타입의 중복 제거위해서는 override해야함
+        return String.valueOf(this.x).hashCode() + String.valueOf(this.y).hashCode(); //String의 hashcode()메소드이용
+        //=> return Objects.hash(this.x, this.y); 도 가능, --> import java.util.Obects; 필요
+    }
+    public boolean equals(Object o){    //override
+        if(o instanceof Node){
+            Node temp = (Node)o;
+            return this.x==temp.x && this.y==temp.y;  //x,y값 모두 같은 것은 equals()결과 true로
+        }
+        return false;
+    }
+}
