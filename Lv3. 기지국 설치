@@ -1,0 +1,24 @@
+class Solution {
+    public int solution(int n, int[] stations, int w) {
+        int answer = 0;
+        int start = 1;    //아파트의 번호
+        int cover = w*2+1;
+        for(int i=0;i<stations.length;i++){   
+            
+            if(stations[i]-w-1>=start){       // 기지국이 설치된 아파트의 전파범위 중 맨 왼쪽보다 작을 때
+                answer += (stations[i]-w-start)/cover;  //필요한 기지국 개수 구하기
+                if((stations[i]-w-start)%cover!=0) answer++;
+                start = stations[i]+w+1;//12    //해당 전파범위 이후의 아파트 번호
+            }
+            else{         //start가 설치된 기지국 범위 안에 있을 때
+                start=stations[i]+w+1;    //해당 전파범위 이후번호로
+            }
+        }
+        if(start<=n){   //맨 오른쪽 아파트들이 전파범위에 해당되지 않은 경우, 기지국 설치 
+            answer += (n-start+1)/cover;
+            if((n-start+1)%cover!=0) answer++;
+        }
+        
+        return answer;
+    }
+}
