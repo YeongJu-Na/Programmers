@@ -1,0 +1,70 @@
+import java.util.HashSet;
+import java.util.Set;
+class Solution {
+    public int solution(int N, int number) {
+        int answer = -1;
+        
+        Set<Integer>[] setarr = new Set[9];
+        int t = N;
+        for(int i=1;i<9;i++){
+            setarr[i]=new HashSet<>();
+            setarr[i].add(t);
+            t=t*10+N;
+        }
+        
+        loop: for(int i=1;i<9;i++){
+            for(int j=1;j<i;j++){
+                for(int x: setarr[j]){
+                    for(int y: setarr[i-j]){
+                        setarr[i].add(x+y);
+                        setarr[i].add(x-y);
+                        setarr[i].add(x*y);
+                        if(y!=0) setarr[i].add(x/y);
+                    }
+                }
+            }
+            for(int x: setarr[i]){
+                if(x==number){
+                    answer = i;
+                    break loop;
+                }
+            }
+        }
+        return answer;
+    }
+}
+
+///////////////////////////////처음 풀이 - stream--> 굳이 이용하지않아도됨-> 위 풀이가 속도 거의 두배가량 더빠름
+import java.util.stream.*;
+import java.util.HashSet;
+class Solution {
+    public int solution(int N, int number) {
+        int answer = -1;
+        
+        HashSet<Integer>[] hs = new HashSet[8]; //i=0~8, i+1개로 만들수 있는 수
+        hs[0] = new HashSet<>();
+        hs[0].add(N);
+        if(number==N) return 1;
+        loop: for(int i=1;i<hs.length;i++) {
+			hs[i] = new HashSet<>();
+			for(int j=1;j<=(i+1)/2;j++) {
+				for(int x: hs[j-1]) {
+					hs[i].addAll(hs[i-j].stream().map(a->a+x).collect(Collectors.toSet()));
+					hs[i].addAll(hs[i-j].stream().map(b->b-x).collect(Collectors.toSet()));
+					hs[i].addAll(hs[i-j].stream().map(bb->x-bb).collect(Collectors.toSet()));
+					hs[i].addAll(hs[i-j].stream().map(c->c*x).collect(Collectors.toSet()));
+					if(x!=0) hs[i].addAll(hs[i-j].stream().map(d->d/x).collect(Collectors.toSet()));
+                    hs[i].addAll(hs[i-j].stream().filter(dd->dd!=0).map(ddd->x/ddd).collect(Collectors.toSet()));
+				}
+			}
+			hs[i].add(Integer.parseInt(String.valueOf(N).repeat(i+1)));
+			for(int x: hs[i]) {
+				if(x==number) {
+					answer=i+1;
+					break loop;
+				}
+			}
+		}   
+        return answer;
+    }
+}
