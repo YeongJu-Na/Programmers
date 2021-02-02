@@ -1,0 +1,37 @@
+import java.util.ArrayList;
+class Solution {
+    public int solution(String str1, String str2) {
+        int answer = 1;
+        ArrayList<String> set1 = new ArrayList<>();
+        ArrayList<String> set2 = new ArrayList<>();
+        
+        for(int i=0;i<str1.length()-1;i++){
+            if(!isChar(str1.charAt(i))||!isChar(str1.charAt(i+1))) continue;    //Character.isAlphbetic() 있음!
+            set1.add(str1.substring(i,i+2).toLowerCase());  //대소문자 구별x위해 소문자로만 바꿈 
+            // ->안바꿔도 이후 비교시 String의 equalsIgnoreCase()사용해서 가능할 듯
+        }
+        for(int i=0;i<str2.length()-1;i++){
+            if(!isChar(str2.charAt(i))||!isChar(str2.charAt(i+1))) continue;
+            set2.add(str2.substring(i,i+2).toLowerCase());
+        }
+        
+        if(set1.size()==0 && set2.size()==0) return 65536;
+        
+        int hap = set1.size() + set2.size();
+        
+        for(String s: set1){
+            if(set2.contains(s)){
+                set2.remove(s); //교집합 원소들 제거
+            }
+        }
+        
+        int x = hap-set1.size()-set2.size(); //교집합 개수
+        
+        answer = x*65536 / (hap-x);   //hap-x= 합집합개수
+        
+        return answer;
+    }
+    boolean isChar(char c){//a-97, A - 65, z-122 Z-90
+        return ((c>=65 && c<= 90)|| c>=97 && c<=122)? true: false;
+    }
+}
