@@ -1,0 +1,48 @@
+import java.util.Queue;
+import java.util.LinkedList;
+class Solution {
+    public int solution(int[][] board) {
+        int[] dx = {1,0,0,-1};  //[0]: 아래로(하),[1]:오른쪽으로(우),[2]:좌,[3]:상
+        int[] dy = {0,1,-1,0};
+        int len = board.length;
+        int[][] mark = new int[len][len];   //해당 위치에서의 방향
+        Queue<Node> q = new LinkedList<>();
+        q.add(new Node(0,0));
+        mark[0][0]=3;
+        while(!q.isEmpty()){
+            Node cur = q.poll();
+            for(int i=0;i<4;i++){
+                int nx=cur.x+dx[i];
+                int ny = cur.y+dy[i];
+                if( nx<0||nx>=len||ny<0||ny>=len||board[nx][ny]==1) continue;
+                int val = board[cur.x][cur.y]+100;
+                if((mark[cur.x][cur.y] & (1<<i))==0) val += 500;  //방향이 바뀌는 노드인 경우(코너)
+                
+                if(board[nx][ny]==0){   //아직 탐색하지 않은 곳
+                    board[nx][ny]=val;
+                    mark[nx][ny] = 1<<i;
+                    q.add(new Node(nx, ny));
+                }
+                else{
+                    if(board[nx][ny]<val) continue;
+                    else if(board[nx][ny]==val) mark[nx][ny]= mark[nx][ny]|(1<<i);  //방향추가
+                    else{   //새로운 탐색으로 더 적은 비용인 경우 값 갱신
+                        board[nx][ny]=val;
+                        mark[nx][ny] = 1<<i;
+                        q.add(new Node(nx, ny));
+                    }
+                }
+            }
+        }
+        return board[len-1][len-1];
+        
+    }
+}
+class Node{
+    int x;
+    int y;
+    Node(int x, int y){
+        this.x = x;
+        this.y = y;
+    }
+}
