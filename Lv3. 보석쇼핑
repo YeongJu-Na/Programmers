@@ -1,0 +1,32 @@
+import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Arrays;
+class Solution {
+    public int[] solution(String[] gems) {
+        int len = gems.length;
+        int[] answer = new int[2];
+        answer[0]=0;
+        answer[1]=len+1;
+        
+        HashSet<String> hs = new HashSet<>();   //보석 종류 수 구하기
+        hs.addAll(Arrays.asList(gems));
+        int size = hs.size();
+        
+        HashMap<String, Integer> hm = new HashMap<>();  //종류별 개수정보 필요해서 hashmap으로 구현
+        int start = 0;    //시작 인덱스
+        
+        for(int i=0;i<gems.length;i++){
+            hm.put(gems[i], hm.getOrDefault(gems[i],0)+1);  //key: 보석이름, value: 보석종류 별 개수 
+            
+            while(hm.get(gems[start])>1){     //원하는 조건(아래 if문) 만족x인 상태에서 첫 위치(start)와 같은 종류 추가된 경우
+                hm.put(gems[start],hm.get(gems[start])-1);    //해당 start에서 답찾지 못하므로 다음 start로 
+                start++;
+            }
+            if(hm.size()==size && i-start < answer[1]-answer[0]){ //모든 종류가 한 개 이상씩 있고, 해당구간 길이가 이전값보다 짧을 때
+                answer[0] = start+1;
+                answer[1] = i+1;
+            }
+        }
+        return answer;
+    }
+}
