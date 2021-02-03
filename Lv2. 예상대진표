@@ -1,0 +1,30 @@
+class Solution
+{
+    public int solution(int n, int a, int b)
+    {
+        int min = Math.min(a,b);
+        int max = Math.max(a,b);
+
+        int tot = (int)(Math.log(n) / Math.log(2));
+        
+        for(int i=1;i<tot+1;i++){
+            if(min%2==1 && max==min+1){
+                answer=i;
+                break;
+            }
+            min = nextround(min);
+            max = nextround(max);
+        }
+        
+        return answer;
+    }
+    int nextround(int x){
+        return (x%2==0) ? x/2 : x/2+1;
+    }
+}
+//다른 풀이
+while(a!=b){
+    a = a/2 + a%2;
+    b = b/2 + b%2;
+    round++;
+}
