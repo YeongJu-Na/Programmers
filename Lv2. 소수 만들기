@@ -1,0 +1,31 @@
+class Solution {
+    static int answer;
+    static boolean[] noPrime= new boolean[3000];    //1000이하의 숫자 3개의 합-> 체크할 최대 수는 3000
+    
+    public int solution(int[] nums) {
+        
+        for(int i=2;i<Math.sqrt(3000);i++){   //에라토스테네스의 체
+            if(noPrime[i])continue;
+            for(int j=i+i; j<3000; j+=i) noPrime[j]=true;
+        }
+        
+        comb(nums, new boolean[nums.length], 0,0);      //3개 숫자의 조합이므로 삼중for문으로도 가능
+        
+        return answer;
+    }
+    void comb(int[] nums, boolean[] visited, int cur, int idx){
+        if(cur==3){
+            int num=0;
+            for(int i=0;i<nums.length;i++){
+                if(visited[i]) num+=nums[i];
+            }
+            if(!noPrime[num]) answer++;   //만들어진 숫자 소수인지 체크
+            return;
+        }
+        for(int i=idx;i<nums.length;i++){
+            visited[i]=true;
+            comb(nums,visited, cur+1, i+1);
+            visited[i]=false;
+        }
+    }
+}
