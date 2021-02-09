@@ -1,0 +1,54 @@
+//유클리드 호제법
+class Solution {
+    public int solution(int[] arr) {
+        
+        int lcm = arr[0];
+        
+        for(int i=1;i<arr.length;i++){
+            int g= gcd(lcm,arr[i]);
+            lcm = g * (lcm/g) * (arr[i]/g);
+            System.out.println(lcm);
+        }
+        
+        return lcm;
+    }
+    int gcd(int a, int b){
+        if(a<b) return(b%a==0)?a:gcd(a,b%a);
+        else return(a%b==0)?b:gcd(b,a%b);
+    }
+}
+
+//다른 풀이 - 실제로 값을 구하는 방법 순서대로 구현
+import java.util.Arrays;
+class Solution {
+    static int[] ret;
+    static int max;
+    static int ans;
+    public int solution(int[] arr) {
+        ans = 1;
+        Arrays.sort(arr);
+        max=arr[arr.length-2];
+        ret=arr;
+        while(divide()){
+            divide();
+        }
+        for(int x:ret) ans*=x;
+        return ans;
+    }
+    boolean divide(){
+        int cnt=0;
+        for(int i=2;i<=max;i++){
+            for(int j=0;j<ret.length;j++){
+                if(ret[j]%i==0) cnt++;
+                if(cnt>1){
+                    for(int k=0;k<ret.length;k++){
+                        if(ret[k]%i==0) ret[k]/=i;
+                    }
+                    ans*=i;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+}
