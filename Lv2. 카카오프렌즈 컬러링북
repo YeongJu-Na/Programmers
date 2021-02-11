@@ -1,0 +1,51 @@
+import java.util.Queue;
+import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Collections;
+
+class Solution {
+    public int[] solution(int m, int n, int[][] picture) {
+        int[] answer=new int[2];
+        int[] dx = {1,0,-1,0};
+        int[] dy = {0,1,0,-1};
+        Queue<Node>q =new LinkedList<>();
+        boolean[][] visited= new boolean[m][n];
+        ArrayList<Integer> arr = new ArrayList<>();   //각 영역의 크기 담는 배열
+        
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(visited[i][j] || picture[i][j]==0) continue;
+                visited[i][j]=true;
+                q.add(new Node(i,j));
+                int ans = 1;
+                
+                while(!q.isEmpty()){
+                    Node cur= q.poll();
+                    
+                    for(int k=0;k<4;k++){
+                        int nx= cur.x+dx[k];
+                        int ny= cur.y+dy[k];
+                        if(nx<0||ny<0||nx>=m||ny>=n||visited[nx][ny]) continue;   //배열밖이거나 방문한경우
+                        if(picture[nx][ny]!=picture[cur.x][cur.y]) continue;    //영역이 다른 경우 추가x
+                        visited[nx][ny]=true;
+                        ans++;
+                        q.add(new Node(nx,ny));
+                    }
+                }
+                arr.add(ans);     //해당 영역의 크기 추가
+            }
+        }
+        answer[0]=arr.size();
+        answer[1]=Collections.max(arr);
+        
+        return answer;
+    }
+}
+class Node{
+    int x;
+    int y;
+    Node(int x, int y){
+        this.x=x;
+        this.y=y;
+    }
+}
