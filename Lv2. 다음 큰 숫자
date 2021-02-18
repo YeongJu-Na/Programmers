@@ -1,0 +1,21 @@
+/////////////////////////////// 풀이1 - 
+class Solution {
+    public int solution(int n) {
+
+        int cnt = cnt_ones(n);      //n의 1개수
+        int num = n+1;
+        while(true){
+            if(cnt_ones(num)==cnt) break;
+            num++;
+        }
+        return num;
+    }
+    int cnt_ones(int x){  //x의 1개수 구하기
+        int ret = 0;
+        int len = (int)(Math.log(x)/Math.log(2))+1;   //2진수일때의 자릿수 구하기
+        for(int i=0;i<len;i++){
+            if((x & 1<<i) !=0) ret++;   //각 자릿수마다 1bit면 +1
+        }
+        return ret;
+    }
+}0
