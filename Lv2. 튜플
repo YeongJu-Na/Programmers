@@ -1,0 +1,61 @@
+/////////////////////////////////풀이 1 -> 중복 용도로만 쓸것이므로 굳이 파싱한 값 넣을 필요x
+import java.util.Arrays;
+import java.util.HashSet;
+class Solution {
+    public int[] solution(String s) {
+        String[] set = s.replaceAll("},\\{"," ").replaceAll("\\{","").replaceAll("\\}","").split(" ");
+        int[] answer = new int[set.length];
+        HashSet<String> hs = new HashSet<>();
+        int idx = 0;
+        
+        Arrays.sort(set,(a,b)->a.length()-b.length());
+        //원소수 3개인 애들은 어차피 원소수 3보다 작은애들 무조건 포함하므로 길이만으로 sort가능
+        
+        for(String str:set){
+            for(String val: str.split(",")){
+                if(hs.add(val)) answer[idx++]=Integer.parseInt(val);
+            }
+        }
+        
+        
+        return answer;
+    }
+}
+////////////////////////////풀이2 - replaceAll사용x
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
+class Solution {
+    public int[] solution(String s) {
+		String pat ="},\\{";
+        String[] temp = s.split(pat);       // {{2 / 2,1 / 2,1,3 / 2,1,3,4}} /
+        Arrays.sort(temp, new Comparator<String>(){     //원소 개수 순서로 정렬
+            public int compare(String s1, String s2){ 
+                int size1 = s1.split(",").length;
+                int size2 = s2.split(",").length;
+                return size1-size2;
+            }
+        });
+        int[] answer = new int[temp.length];
+        HashSet<Integer> hs = new HashSet<>();
+        
+        for(int i=0;i<temp.length;i++){     //temp는 원소 개수 순서
+            String[] strtemp = temp[i].split(",");
+            //answer[i]에 들어갈 값 찾기 -> 숫자로 가공 후 이미 존재하는지 확인하기 
+            for(String st: strtemp){
+                int x = 0;
+                if(st.startsWith("{")){
+                    if(st.endsWith("}")) x = Integer.parseInt(st.substring(2,st.length()-2));
+                    else x= Integer.parseInt(st.substring(2));
+                }
+                else if(st.endsWith("}")) x = Integer.parseInt(st.substring(0,st.length()-2));
+                else x=Integer.parseInt(st);
+                
+                if(hs.contains(x)) continue;
+                answer[i] = x;
+                hs.add(x);
+            }
+        }
+        return answer;
+    }
+}
