@@ -1,0 +1,43 @@
+import java.util.Arrays;
+class Solution {
+    static boolean[][] chk;
+    public int[] solution(int[][] arr) {
+        int[] answer = new int[2];
+        int len = arr[0].length;
+        int size=len;
+        chk = new boolean[len][len];
+        
+        while(size>1){  //2x2이상까지 쿼드 압축->압축 성공시 true로
+            for(int i=0;i<len;i+=size){ //0,4 / 0,2,4
+               for(int j=0;j<len;j+=size){
+                   if(chk[i][j]) continue;
+                   if(!chk_arr(i,j,size,arr)) continue;
+                   answer[arr[i][j]]++;
+               }
+            }
+            size /= 2;
+        }
+        for(int i=0;i<len;i++){
+            for(int j=0;j<len;j++){
+                if(chk[i][j]) continue;
+                answer[arr[i][j]]++;
+            }
+        }
+        return answer;
+    }
+    boolean chk_arr(int x, int y, int size, int[][] arr){ //시작점(x,y) 검사할 행렬 크기 size
+        int val= arr[x][y];
+        for(int i=x;i<x+size;i++){
+            for(int j=y;j<y+size;j++){
+                if(val!=arr[i][j]) return false;
+            }
+        }
+        for(int i=x;i<x+size;i++){      //같으면 true로
+            for(int j=y;j<y+size;j++){
+                chk[i][j]=true;
+            }
+        }
+        return true;
+    }
+}
+//////////////////////////////////다른 풀이 - 모든 값 합한 뒤 0의 개수는 size*size -합(합은 1의 개수를 의미)
