@@ -7,7 +7,7 @@ class Solution {
         int size=len;
         chk = new boolean[len][len];
         
-        while(size>1){  //2x2이상까지 쿼드 압축->압축 성공시 true로
+        while(size>1){  //2x2이상까지 쿼드 압축->압축 성공시 true로. size=8->4->2
             for(int i=0;i<len;i+=size){ //0,4 / 0,2,4
                for(int j=0;j<len;j+=size){
                    if(chk[i][j]) continue;
@@ -17,8 +17,8 @@ class Solution {
             }
             size /= 2;
         }
-        for(int i=0;i<len;i++){
-            for(int j=0;j<len;j++){
+        for(int i=0;i<len;i++){             //크기 1개짜리의 개수 세기
+            for(int j=0;j<len;j++){     
                 if(chk[i][j]) continue;
                 answer[arr[i][j]]++;
             }
@@ -41,3 +41,31 @@ class Solution {
     }
 }
 //////////////////////////////////다른 풀이 - 모든 값 합한 뒤 0의 개수는 size*size -합(합은 1의 개수를 의미)
+class Solution {
+    static int[] answer;
+    public int[] solution(int[][] arr) {
+        answer = new int[2];
+        cnt(0,arr.length,0,arr.length,arr);
+        
+        return answer;
+    }
+    void cnt(int xs, int xe, int ys, int ye, int[][] arr){      //xe, ye - exclusive
+        int ones = 0, max = (int)Math.pow((xe-xs),2);   
+        
+        for(int i=xs;i<xe;i++){
+            for(int j=ys;j<ye;j++){
+                ones+=arr[i][j];        
+            }
+        }
+        //ones결과가 0이면 모두 0인 것, max면 모두 1
+        if(ones==0) answer[0]++;
+        else if(ones==max) answer[1]++;
+        else{                               //압축 실패 후 다음 작은 사이즈(/2)로 압축 실행
+            int mid = (xe-xs)/2;
+            cnt(xs, xs+mid,ys,ys+mid,arr);
+            cnt(xs, xs+mid,ys+mid,ye,arr);
+            cnt(xs+mid, xe,ys,ys+mid,arr);
+            cnt(xs+mid, xe,ys+mid,ye,arr);
+        }
+    }
+}
