@@ -1,0 +1,23 @@
+class Solution
+{
+    public int solution(int [][]board)
+    {
+        
+        int answer = 0;
+        int row = board.length;
+        int col = board[0].length;
+        int[][] matrix = new int[row+1][col+1];   //matrix[i][j] = 해당 위치(board[i-1],[j-1])까지 가능한 최대 정사각형 크기
+        
+        for(int i=1;i<row+1;i++){
+            for(int j=1;j<col+1;j++){
+                if(board[i-1][j-1]!=1) continue;
+                int temp = matrix[i-1][j-1];
+                temp = Math.min(temp, Math.min(matrix[i-1][j],matrix[i][j-1]));
+                matrix[i][j] = temp+1;
+                if(answer<temp+1) answer = temp+1;
+            }
+        }
+       
+        return answer*answer;
+    }
+}
