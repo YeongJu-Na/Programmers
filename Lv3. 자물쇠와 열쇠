@@ -1,0 +1,60 @@
+class Solution {
+    static int n,m,nm;
+    public boolean solution(int[][] key, int[][] lock) {
+        boolean answer = true;
+        n = key.length;
+        m = lock.length;
+        nm = n*2+m-2;
+        
+        int[][] arr = new int[nm][nm];    //모든 위치에서 대조하기 위한 배열
+        int[][] compkey = key;
+        
+        for(int i=n-1;i<n-1+m;i++){
+            for(int j=n-1;j<n-1+m;j++){
+                arr[i][j] = lock[i-(n-1)][j-(n-1)];
+            }
+        }
+        
+        for(int k=0;k<4;k++){
+            if(compareAll(arr,compkey)) return true;
+            compkey = rotate(compkey);  //90도씩 회전
+         
+        }
+        return false;
+        
+        
+    }
+    //90도 회전한 key배열 반환
+    static int[][] rotate(int[][] arr){ 
+        int[][] temp = new int[n][n];
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                temp[i][j]=arr[n-j-1][i];
+            }
+        }
+        return temp;
+    }
+    //key배열과 비교
+    static boolean compareAll(int[][] arr, int[][] comp){
+        for(int i=0;i<=nm-n;i++){
+            for(int j=0;j<=nm-n;j++){
+                if(compare(arr,comp,i,j)) return true;   //시작점 i, j부터 key배열 대조
+            }
+        }
+        return false;
+    }
+    //한번의 대조과정
+    static boolean compare(int[][] arr, int[][] key, int starti, int startj){ 
+        for(int i=n-1;i<n-1+m;i++){
+            for(int j=n-1;j<n-1+m;j++){
+                if(i>=starti&&i<starti+n&&j>=startj&&j<startj+n){ //키 배열이 영향을 미치는 경우
+                    if(arr[i][j] +key[i-starti][j-startj]!=1) return false;
+                }
+                else{
+                    if(arr[i][j]!=1) return false;
+                }
+            }
+        }
+        return true;
+    }
+}
