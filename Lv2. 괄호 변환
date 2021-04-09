@@ -1,0 +1,38 @@
+class Solution {
+    public String solution(String p) {
+        String answer = "";
+        if(p.equals("")) return "";
+        int cnt=0;
+        boolean isRight=true;
+        int open = 0;
+        int close = 0;
+        
+        for(char c: p.toCharArray()){
+            if(c=='('){
+                open++;
+                cnt++;
+            }
+            else{
+                close++;
+                cnt--;
+            }
+            if(cnt<0) isRight=false;
+            if(open==close){    //균형 잡힌 문자열
+                if(cnt!=0) isRight=false;
+                if(isRight) return p.substring(0,open+close)+solution(p.substring(open+close));
+                else{
+                    String ret = "(";
+                    ret += solution(p.substring(open+close))+")";
+                    for(char cc:p.substring(1,open+close-1).toCharArray()){
+                        if(cc=='(') ret+=')';
+                        else ret+='(';
+                    }
+                    return ret;
+                }
+            }
+            
+        }
+        
+        return answer;
+    }
+}
