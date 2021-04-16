@@ -1,0 +1,90 @@
+import java.util.*;
+class Solution {
+    static int n;
+    public int solution(int[][] board) {
+        int[] dx = {1,0,-1,0};
+        int[] dy = {0,1,0,-1};
+        
+        int answer = 0;
+        n=board.length;
+        int[][] chk = new int[n][n];    //가로 1, 세로 2
+        chk[0][0]=1;
+        
+        Queue<State> q = new LinkedList<>();
+        q.add(new State(0,0,1));
+        
+        while(!q.isEmpty()){
+            int size = q.size();
+            for(int i=0;i<size;i++){
+                State cur = q.poll();
+                
+                if(cur.st==1&&cur.x==n-1&&cur.y+1==n-1) return answer;  //가로일 때
+                if(cur.st==2&&cur.x+1==n-1&&cur.y==n-1) return answer;  //세로일 때
+                
+                for(int j=0;j<4;j++){
+                    int nx = cur.x+dx[j];
+                    int ny = cur.y+dy[j];
+                    //범위가 아니거나 벽이 있는 경우
+                    if(!isRange(nx,ny)||board[nx][ny]==1) continue;
+                    //이미 체크한 경우
+                    if(chk[nx][ny]==cur.st||chk[nx][ny]==3) continue;
+                    //가로인 경우, 오른쪽도 범위가 아니거나 벽이 있으면 안됨
+                    if(cur.st==1&&(!isRange(nx,ny+1)||board[nx][ny+1]==1)) continue;
+                    //세로,아래
+                    if(cur.st==2&&(!isRange(nx+1,ny)||board[nx+1][ny]==1)) continue;
+                    
+                    //같은 방향(cur.st)으로 들어갈 수 있음
+                    chk[nx][ny] += cur.st;
+                    q.add(new State(nx,ny,cur.st));
+                    
+                    //회전
+                    if(cur.st==1&&(j==0||j==2)){  //가로일 때
+                        nx = Math.min(nx,cur.x);
+                        if(chk[nx][ny]!=2&&chk[nx][ny]!=3){
+                            chk[nx][ny]+=2;               //세로 추가
+                            q.add(new State(nx,ny,2));
+                            
+                        }
+                        if(chk[nx][ny+1]!=2&&chk[nx][ny+1]!=3){
+                            chk[nx][ny+1]+=2;
+                            q.add(new State(nx,ny+1,2));
+                            
+                        }
+                    }
+                    if(cur.st==2&&(j==1||j==3)){      //세로일 때
+                        ny = Math.min(ny,cur.y);
+                        if(chk[nx][ny]!=1&&chk[nx][ny]!=3){
+                            chk[nx][ny]+=1;         //가로 추가
+                            q.add(new State(nx,ny,1));
+                            
+                        }
+                        if(chk[nx+1][ny]!=1&&chk[nx+1][ny]!=3){
+                            chk[nx+1][ny]+=1;
+                            q.add(new State(nx+1,ny,1));
+                           
+                        }
+                    }
+                }
+                
+            }
+            answer++;
+            
+        }
+        return answer;
+        
+    }
+    static boolean isRange(int x, int y){
+        if(x<0||y<0||x>=n||y>=n) return false;
+        return true;
+    }
+}
+class State{
+    int x;
+    int y;
+    int st;
+    State(int x, int y, int st){
+        this.x = x;
+        this.y = y;
+        this.st = st;
+    }
+}
