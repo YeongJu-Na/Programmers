@@ -1,0 +1,73 @@
+import java.util.*;
+class Solution {
+    public int solution(int[] food_times, long k) {
+        int answer = 0;
+        int tot = food_times.length;    //전체 음식 수
+
+        ArrayList<Food> foods = new ArrayList<>();
+        for(int i=0;i<tot;i++) foods.add(new Food(food_times[i],i));
+
+        Collections.sort(foods);
+
+        Comparator<Food> compIdx = new Comparator<>(){
+            public int compare(Food f1, Food f2){
+                return f1.idx-f2.idx;
+            }
+        };
+
+        int rotate = 0;
+
+        for(int i=0;i<foods.size();i++){
+            int cur_time = foods.get(i).time;
+            long diff =  cur_time - rotate;
+            if(diff!=0){
+                long spend = diff*tot;
+                if(spend<=k){
+                    k-=spend;
+                    rotate = cur_time;
+                }
+                else{
+                    k%=tot;
+                    foods.subList(i,food_times.length).sort(compIdx);
+                    return foods.get(i+(int)k).idx+1;
+                }
+            }
+            tot--;
+
+        }
+        /*
+
+        while(!foods.isEmpty()){
+            tot = foods.size();
+            Food cur = foods.get(0);   //남은 food중 가장 작은 값
+            //int cnt = 0;
+            long diff = (long)(cur.time-rotate)*tot;
+            if(k<diff){
+                foods.sort(compIdx);
+                k%=tot;
+
+                return foods.get((int)k).idx+1;
+            }
+            else{
+                while(!foods.isEmpty() && cur.time==foods.get(0).time){
+                    foods.remove(0);
+                }
+                k -= diff;
+                rotate = cur.time;
+            }
+        }*/
+
+        return -1;
+    }
+}
+class Food implements Comparable<Food>{
+    int time;
+    int idx;
+    Food(int time, int idx){
+        this.time = time;
+        this.idx = idx;
+    }
+    public int compareTo(Food f){
+        return this.time-f.time;
+    }
+}
