@@ -1,0 +1,59 @@
+class Solution {
+    
+    public String solution(int[] numbers, String hand) {
+        StringBuilder sb= new StringBuilder();
+        //x: 높이
+        int leftx = 3;   //3,0
+        int lefty = 0;
+        int rightx = 3;  //3,2
+        int righty = 2;
+        
+        for(int i=0;i<numbers.length;i++){
+            int num = numbers[i];
+            if(num!=0&&num%3==0){   //3,6,9
+                sb.append("R");
+                rightx = num/3-1;
+                righty=2;
+            }
+            else if(num%3==1){  //1,4,7
+                sb.append("L");
+                leftx = num/3;
+                lefty = 0;
+            }
+            else{   //2,5,8,0 --> 높이(x)/ y는항상 1
+                int numx = num/3;
+                if(num==0) numx=3;
+                
+                int dist_l = Math.abs(leftx-numx)+Math.abs(lefty-1);
+                int dist_r = Math.abs(rightx-numx)+Math.abs(righty-1);
+                
+                if((dist_l==dist_r)){
+                    if(hand.equals("right")){
+                        sb.append("R");
+                        rightx = numx;
+                        righty = 1;
+                    }
+                    else{
+                        sb.append("L");
+                        leftx = numx;
+                        lefty = 1;
+                    }
+                }
+                else{
+                    if(dist_r<dist_l){
+                        sb.append("R");
+                        rightx = numx;
+                        righty = 1;
+                    }
+                    else{
+                        sb.append("L");
+                        leftx = numx;
+                        lefty = 1;
+                    }
+                }
+            }
+            
+        }
+        return sb.toString();
+    }
+}
