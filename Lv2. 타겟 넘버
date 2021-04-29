@@ -1,0 +1,36 @@
+class Solution {
+    public static int answer;
+    private static int end;
+    
+    public int solution(int[] numbers, int target) {
+        answer = 0;
+        end = numbers.length;
+        boolean[] state = new boolean[numbers.length];
+        sol(state, 0, numbers,target);
+        return answer;
+    }
+    
+    static void sol(boolean[] state, int idx, int[] numbers, int target){
+        if(idx==end){
+            int val = 0;
+            for(int i=0;i<end;i++){
+                if(state[i]) val += numbers[i];
+                else val -= numbers[i];
+            }
+            if(val==target) answer++;
+            return;
+        }
+        state[idx]=false;
+        sol(state, idx+1, numbers,target);
+        state[idx]=true;
+        sol(state, idx+1, numbers,target);
+    }
+}
+////////////// sol에 대한 다른 풀이 - 계산한 내용을 보내면 
+    static int dfs(int[] numbers, int n, int sum, int target){
+        if(n==numbers.length){
+            if(sum==target) return 1;
+            return 0;
+        }
+        return dfs(numbers,n+1,sum+numbers[n],target)+dfs(numbers,n+1,sum-numbers[n],target);
+    }
