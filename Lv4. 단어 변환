@@ -1,0 +1,77 @@
+import java.util.*;
+
+class Solution {
+    
+    public static ArrayList<String>[] arr=new ArrayList[10001];
+    public static ArrayList<String>[] reversedArr = new ArrayList[10001];
+    
+    public int[] solution(String[] words, String[] queries) {
+        int[] answer = new int[queries.length];
+        
+        for(int i=0;i<10001;i++){
+            arr[i]=new ArrayList<>();
+            reversedArr[i]=new ArrayList<>();
+        }
+        for(int i=0;i<words.length;i++){
+            String word = words[i];
+            arr[word.length()].add(words[i]);
+            StringBuilder sb = new StringBuilder();
+            sb.append(word);
+            reversedArr[word.length()].add(sb.reverse().toString());
+        }
+        for(int i=0;i<10001;i++){
+            Collections.sort(arr[i]);
+            Collections.sort(reversedArr[i]);
+        }
+        
+        
+        for(int i=0;i<queries.length;i++){
+            String q = queries[i];
+            int ret =  0;
+            if(q.charAt(0)=='?'){
+                StringBuilder sb =new StringBuilder();
+                sb.append(q);
+                ret = cnt(sb.reverse().toString(),true);
+            }
+            else ret = cnt(q,false);
+            //?로시작하는 문자열 뒤집어서 비교
+            answer[i]=ret;
+        }
+        
+        
+        
+        return answer;
+    }
+    public static int cnt(String word, boolean StartQ){
+        //StartQ=true면 ?로 시작하는 문자열
+        String strA = word.replace('?','a');
+        String strB = word.replace('?','z');
+        
+        ArrayList<String> temp;
+        if(StartQ) temp = reversedArr[word.length()];
+        else temp = arr[word.length()];
+        
+        //System.out.println(temp.toString());
+        int l = LowerBound(temp, strA, 0, temp.size());
+        int r = UpperBound(temp, strB, 0, temp.size());
+        
+        return r-l;
+        
+    }
+    public static int LowerBound(ArrayList<String> al, String word, int start, int end){
+        while(start<end){
+            int mid = (start+end)/2;
+            if(al.get(mid).compareTo(word)<0) start = mid+1;
+            else end=mid;
+        }
+        return end;
+    }
+    public static int UpperBound(ArrayList<String> al, String word, int start, int end){
+        while(start<end){
+            int mid = (start+end)/2;
+            if(al.get(mid).compareTo(word)<=0) start = mid+1;
+            else end=mid;
+        }
+        return end;
+    }
+}
