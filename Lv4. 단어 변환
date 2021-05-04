@@ -3,7 +3,7 @@ import java.util.*;
 class Solution {
     
     public static ArrayList<String>[] arr=new ArrayList[10001];
-    public static ArrayList<String>[] reversedArr = new ArrayList[10001];
+    public static ArrayList<String>[] reversedArr = new ArrayList[10001];   //?로 시작하는 쿼리에 대해
     
     public int[] solution(String[] words, String[] queries) {
         int[] answer = new int[queries.length];
@@ -42,8 +42,12 @@ class Solution {
         
         return answer;
     }
+    // 쿼리 word에 대한 결과 반환, StartQ=true면 ?로 시작하는 문자열
+    // ?를 모두 a로 했을 때 word배열에 들어갈 위치--> strA를 LowerBound에 넣은 결과
+    // ?를 모두 z로 한 strB UpperBound에 넣은 결과
+    // ==> ?외에 같은 단어의 개수 구할 수 있음
     public static int cnt(String word, boolean StartQ){
-        //StartQ=true면 ?로 시작하는 문자열
+        
         String strA = word.replace('?','a');
         String strB = word.replace('?','z');
         
@@ -55,9 +59,12 @@ class Solution {
         int l = LowerBound(temp, strA, 0, temp.size());
         int r = UpperBound(temp, strB, 0, temp.size());
         
+        // ?가 없는 단어라면 l은 해당 단어의 위치, r은 해당 단어의 다음 위치
+        // ?있으면 l은 ?외에 문자가 같은 단어의 시작 위치, r은 ?외에 같은 단어의 다음 위치
         return r-l;
         
     }
+    // "for??"--> "foraa"가 있다면 해당 위치를 반환
     public static int LowerBound(ArrayList<String> al, String word, int start, int end){
         while(start<end){
             int mid = (start+end)/2;
@@ -66,6 +73,7 @@ class Solution {
         }
         return end;
     }
+    // "for??"--> "forzz"있으면 그 다음 위치 반환 
     public static int UpperBound(ArrayList<String> al, String word, int start, int end){
         while(start<end){
             int mid = (start+end)/2;
