@@ -1,0 +1,46 @@
+import java.util.*;
+class Solution {
+    static int len;
+    static char[] arr;
+    static HashMap<Character,Integer> open;
+    static HashMap<Character,Integer> close;
+    
+    public int solution(String s) {
+        int answer = 0;
+        len = s.length();
+        arr=new char[len];
+        for(int i=0;i<len;i++) arr[i]=s.charAt(i);
+        
+        
+        open = new HashMap<>();
+        close = new HashMap<>();
+        open.put('(',0);
+        open.put('[',1);
+        open.put('{',2);
+        close.put(')',0);
+        close.put(']',1);
+        close.put('}',2);
+        
+        for(int i=0;i<len;i++) if(chk(i)) answer++;
+        
+        return answer;
+    }
+    static boolean chk(int start){
+        Stack<Integer> st = new Stack<>();
+        
+        for(int i=start;i<start+len;i++){
+            int idx = i;
+            if(i>=len) idx-=len;
+            char cur = arr[idx];
+            
+            if(open.containsKey(cur)){  // 여는괄호면
+                st.push(open.get(cur));
+            }
+            else{
+                if(!st.isEmpty()&&st.peek()==close.get(cur)) st.pop();
+                else return false;
+            }
+        }
+        return st.isEmpty();
+    }
+}
