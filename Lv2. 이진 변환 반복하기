@@ -1,0 +1,36 @@
+import java.util.stream.*;
+class Solution {
+    public int[] solution(String s) {
+        int[] answer =  new int[2];
+        /*
+        while(!s.equals("1")){
+            long x = s.chars() //1의 개수
+                .filter(n->Character.getNumericValue(n)==1)
+                .count();
+            answer[0]++;
+            answer[1]+=s.length()-(int)x;
+            s = Integer.toBinaryString((int)x);
+        }
+        */
+        
+        
+        while(!s.equals("1")){
+            String temp = s.replaceAll("0","");
+            answer[0]++;
+            answer[1] += s.length()-temp.length();  // 제거된 0 개수
+            s = toBinaryString(temp.length());
+        }
+        
+        
+        
+        return answer;
+    }
+    static String toBinaryString(int num){
+        StringBuilder sb = new StringBuilder();
+        while(num>0){
+            sb.append(num%2);
+            num /= 2;
+        }
+        return sb.reverse().toString();
+    }
+}
