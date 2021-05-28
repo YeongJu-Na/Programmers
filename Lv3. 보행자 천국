@@ -2,6 +2,37 @@ class Solution {
     static int MOD = 20170805;
     public int solution(int m, int n, int[][] cityMap) { //m:row, n:col
         int answer = 0;
+        int[][] temp = new int[m][n];   // temp[i][j]: (i,j)까지 도달하는 경우의 수
+ 
+        temp[0][0]=1;
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(cityMap[i][j]==1) continue;
+                //  위에서 내려올 수 있는 경우의 수 더하기
+                if(i!=0){
+                    int x=i-1;
+                    while(cityMap[x][j]==2){    // 가져올 위치의 배열값이 2이면, 그 위의 값으로
+                        x--;
+                        if(x<0) break;
+                    }
+                    if(x>=0) temp[i][j]+=temp[x][j];
+                }
+                // 왼쪽에서 올 경우의 수 더하기
+                if(j!=0){
+                    int y=j-1;
+                    while(cityMap[i][y]==2){
+                        y--;
+                        if(y<0) break;
+                    }
+                    if(y>=0) temp[i][j]+=temp[i][y];
+                }
+                temp[i][j] %= MOD;
+            }   
+        }
+        
+        return temp[m-1][n-1];
+        
+        /*
         int[][][] dp = new int[m][n][2];    //방향별 공간 추가--> 3차원 배열 대신 2차원 배열 두개도 O
         dp[0][0][0]=1%MOD;  //아래
         dp[0][0][1]=1%MOD;  //오른쪽
@@ -25,5 +56,6 @@ class Solution {
         answer = dp[m-1][n-1][0];
         
         return answer;
+        */
     }
 }
