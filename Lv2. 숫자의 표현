@@ -1,0 +1,29 @@
+class Solution {
+    static int target;
+    public int solution(int n) {
+        int answer = 0;
+        target = n;
+        
+        for(int i=1;i<=n;i++){
+            if(isAns(i)) answer++;
+        }
+        
+        return answer;
+    }
+    static boolean isAns(int start){
+        int sum = start;
+        int val = start;
+        while(sum<target){
+            val++;
+            sum += val;
+        }
+        return sum==target;
+    }
+}
+///////////////////////////////////////// 다른 풀이
+for(int i=1;i<=num;i+=2){
+    if(num%i==0) answer++;
+}
+// num을 홀수 개의 연속된 숫자로 표현--> a, 3a, 5a ~
+// num을 짝수 개의 연속된 숫자로 표현--> 2a-1, 2(2a-1), 4(2a-1)
+// 모두 홀수의 배수
