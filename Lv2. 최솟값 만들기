@@ -1,0 +1,23 @@
+import java.util.*;
+
+class Solution
+{
+    public int solution(int []A, int []B)
+    {
+        int answer = 0;
+        int len = A.length;
+        Arrays.sort(A);
+        Arrays.sort(B);
+        
+        for(int i=0;i<len;i++){
+            answer += A[i]*B[len-i-1];
+        }
+        return answer;
+    }
+}
+// 증명
+// a1 < a2
+// b1 < b2
+// 가정: 큰수와 작은수의 곱이 더 크다
+// a1*b2 + a2b1 > a1*b1 + a2b2
+// a1(b2-b1) > a2(b2-b1) --> a1>a2 --> 틀리다
