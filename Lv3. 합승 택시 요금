@@ -1,0 +1,38 @@
+import java.util.*;
+class Solution {
+    static final int max = (int)1e8;
+    
+    public int solution(int n, int s, int a, int b, int[][] fares) {
+        int answer = 0;
+        
+        int[][] dist = new int[n+1][n+1];
+        for(int i=0;i<n+1;i++){
+            Arrays.fill(dist[i],max);
+            dist[i][i]=0;
+        }
+        
+        for(int i=0;i<fares.length;i++){
+            dist[fares[i][0]][fares[i][1]] = fares[i][2];
+            dist[fares[i][1]][fares[i][0]] = fares[i][2];
+        }
+        
+        // 실수로 k를 가장 안쪽 for문으로 넣음 --> 하나의 경로에 대해 모든 중간 정점 확인 --> 다른 노드의 변경사항 반영 못할 수 있음
+        // 플로이드 와샬 - 하나의 중간 정점에 대해 모든 경로 검사
+        for(int k=1;k<n+1;k++){
+            for(int i=1;i<n+1;i++){
+                for(int j=1;j<n+1;j++){
+                    if(i==j||i==k||j==k) continue;
+                    dist[i][j] = Math.min(dist[i][j],dist[i][k]+dist[k][j]);
+                }
+            }
+        }
+        answer = max;
+        
+        for(int i=1;i<n+1;i++){
+            answer = Math.min(answer,dist[s][i]+dist[i][a]+dist[i][b]);
+        }
+        
+        
+        return answer;
+    }
+}
