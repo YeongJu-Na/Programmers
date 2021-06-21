@@ -1,0 +1,89 @@
+class Solution {
+    public int solution(String s) {
+        // s길이 1000 --> i=1~500 ==> len/i 번
+        char[] carr = s.toCharArray();
+        int ans = carr.length;
+        
+        for(int i=carr.length/2;i>=1;i--){
+            ans = Math.min(result(carr,i),ans);
+            
+        }
+        //System.out.println(ans);
+        return ans;
+        
+    }
+    static int result(char[] ca, int len){
+        int start = 0;
+        boolean isSame=true;
+        int cnt = 1;
+        int ret = len;
+        
+        for(int i=len;i<ca.length;i+=len){
+            if(i+len>ca.length) break;  // 비교 x
+            
+            isSame = true;
+            for(int j=0;j<len;j++){
+                if(ca[i+j]!=ca[start+j]){
+                    isSame=false;
+                    break;
+                }
+            }
+            
+            if(isSame) cnt++;
+            else{
+                start = i;
+                ret += len;
+                if(cnt!=1) ret += (int)Math.log10(cnt)+1;
+                cnt = 1;
+            }
+            
+        }
+        ret += ca.length%len;
+        if(cnt!=1) ret += (int)Math.log10(cnt)+1;
+        return ret;
+    }
+}
+///////////////////// 위 풀이로는 모든 테스트케이스(28개, 문자열 길이 최대 1000) 1ms 미만
+/////////////////////////////////////////////////////////////////// 이전 풀이 --> 큰 차이: String의 substring으로 비교 ==> 새로운 풀이가 항상 더 빠름(최대 5.69ms)
+class Solution {
+    public int solution(String s) {
+        int min = s.length();
+        for(int i=1;i<s.length();i++){
+            if(sol(s,i)<min) min = sol(s,i);
+        }
+        return min;
+    }
+    public int sol(String s, int n){
+        int a = s.length()/n;   //몫
+        StringBuilder sb = new StringBuilder();
+        int count = 1;
+        if(a>1){
+            for(int i=0;i<n*(a-1);i+=n){
+                if(s.substring(i,i+n).equals(s.substring(i+n,i+n+n))){
+                    count++;
+                    if(i==n*(a-2)){
+                        sb.append(s.substring(i,i+n));
+                        sb.append(count);
+                    }
+                }
+                else{ // 다음거랑 다르면
+
+                    sb.append(s.substring(i,i+n));
+                    if(count !=1) sb.append(count);
+                    count = 1;
+
+                    if(i==n*(a-2)){ // 마지막 인덱스
+                        sb.append(s.substring(i+n,i+n+n));
+                    }
+                }
+            }
+            if(s.length()%n!=0){
+                sb.append(s.substring(n*a, s.length()));
+            }
+        }
+        else{ // 몫이 1보다 작거나 같으면 비교 필요 x
+            return s.length();
+        }
+        return sb.length();
+    }
+}
