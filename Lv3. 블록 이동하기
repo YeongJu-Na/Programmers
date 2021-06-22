@@ -1,6 +1,117 @@
 import java.util.*;
 class Solution {
     static int n;
+
+    public int solution(int[][] board) {
+
+        int[] dx = {1,0,-1,0};
+        int[] dy = {0,1,0,-1};
+
+        int ans = 10000;
+        n = board.length;
+
+        Queue<Robot> q = new LinkedList<>();
+        q.add(new Robot(new Node(0,0), new Node(0,1), 0));
+
+        HashSet<Robot> visited = new HashSet<>();
+        visited.add(q.peek());
+
+        while(!q.isEmpty()){
+            Robot cur = q.poll();
+
+            if(isAns(cur.n1)||isAns(cur.n2)){
+                ans = cur.cnt;
+                break;
+            }
+            for(int i=0;i<4;i++){
+                Node nn1 = new Node(cur.n1.x+dx[i], cur.n1.y+dy[i]);
+                Node nn2 = new Node(cur.n2.x+dx[i], cur.n2.y+dy[i]);
+
+                if(!isRange(nn1)||!isRange(nn2)) continue;
+                if(board[nn1.x][nn1.y]!=0||board[nn2.x][nn2.y]!=0) continue;
+
+                Robot adj1 = new Robot(cur.n1, nn1, cur.cnt+1);
+                Robot adj2 = new Robot(cur.n2, nn2, cur.cnt+1);
+                Robot adj3 = new Robot(nn1, nn2, cur.cnt+1);
+
+                if(!visited.contains(adj1)){
+                    visited.add(adj1);
+                    visited.add(new Robot(nn1, cur.n1, cur.cnt+1));
+                    q.add(adj1);
+                }
+                if(!visited.contains(adj2)){
+                    visited.add(adj2);
+                    visited.add(new Robot(nn2, cur.n2, cur.cnt+1));
+                    q.add(adj2);
+                }
+                if(!visited.contains(adj3)){
+                    visited.add(adj3);
+                    visited.add(new Robot(nn2, nn1, cur.cnt+1));
+                    q.add(adj3);
+                }
+            }
+        }
+
+        // System.out.println(ans);
+
+        return ans;
+    }
+    static boolean isAns(Node node){
+        return (node.x==n-1) && (node.y==n-1);
+    }
+    static boolean isRange(Node node){
+        return (node.x>=0 && node.x<n && node.y>=0 && node.y<n);
+    }
+}
+class Node{
+    int x;
+    int y;
+    Node(int x, int y){
+        super();
+        this.x=x;
+        this.y=y;
+    }
+    public int hashCode(){
+        //return Objects.hash(Integer.toString(x)+Integer.toString(y));
+        return Objects.hash(x,y);
+    }
+    public boolean equals(Object o){
+        if(o instanceof Node){
+            Node nn= (Node)o;
+            return this.hashCode()==nn.hashCode();
+        }
+        return false;
+    }
+}
+class Robot{
+    Node n1;
+    Node n2;
+    int cnt;
+    Robot(Node n1, Node n2, int cnt){
+        super();
+        this.n1 = n1;
+        this.n2 = n2;
+        this.cnt = cnt;
+    }
+    public int hashCode(){
+        return  Objects.hash(n1.x,n1.y,n2.x,n2.y);
+    }
+
+    public boolean equals(Object o){
+        if(o instanceof Robot){
+            Robot r = (Robot)o;
+
+            return (this.n1.equals(r.n1)&&this.n2.equals(r.n2))|| (this.n1.equals(r.n2)&&this.n2.equals(r.n1));
+        }
+        return false;
+    }
+}
+/////////////////////////////////// 새 풀이: hashCode만든 후 equals를 제대로 만들지 않았어서 테스트케이스 13, 14 통과 못했음
+==> equals는 해시테이블에서 해시값이 충돌된 것들에 대해 같은것인지 판별할 때 사용됨!
+///////////////////////////////////////////////////////// 이전 풀이
+import java.util.*;
+class Solution {
+    static int n;
     public int solution(int[][] board) {
         int[] dx = {1,0,-1,0};
         int[] dy = {0,1,0,-1};
